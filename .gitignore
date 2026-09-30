@@ -1,0 +1,9 @@
+# Signing material never belongs in this repository
+*.key
+*.pfx
+*.p12
+*.crt
+*.cer
+*.csr
+*.srl
+certs/

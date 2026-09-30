@@ -1,0 +1,8 @@
+# X.509 v3 extensions for the code signing LEAF certificate.
+# Referenced by openssl x509 -extfile codesign.ext -extensions v3_codesign
+[ v3_codesign ]
+basicConstraints        = critical, CA:FALSE
+keyUsage                = critical, digitalSignature
+extendedKeyUsage        = critical, codeSigning
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid, issuer
