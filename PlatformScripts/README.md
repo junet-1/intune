@@ -1,60 +1,60 @@
 # Windows Platform Scripts
 
-Eigenständige Intune Platform Scripts (Devices → Scripts and remediations →
-Platform scripts). Jedes Skript ist in sich geschlossen, idempotent und läuft als
-SYSTEM. Protokolliert wird nach C:\\ProgramData\\IntuneScripts\\Logs. Exit 0 = Erfolg,
-nicht-null = Fehler (Intune wiederholt).
+Standalone Intune platform scripts (Devices → Scripts and remediations →
+Platform scripts). Every script is self-contained, idempotent and runs as
+SYSTEM. Logs go to `C:\ProgramData\IntuneScripts\Logs`. Exit 0 = success,
+non-zero = failure (Intune retries).
 
-## Skripte
+## Scripts
 
-| Skript                               | Intune-Name                      | Kategorie       | Zweck                                                                                                                       |
-|--------------------------------------|----------------------------------|-----------------|-----------------------------------------------------------------------------------------------------------------------------|
-| PS-D-WIN-AutoAcceptSSO.ps1           | PS-D-WIN-AutoAcceptSSO           | UX/Config       | Prüft und setzt `AutoAcceptSsoPermission=1` als maschinenweite Windows-AAD-Richtlinie                                      |
-| PS-D-WIN-TimeZoneAuto.ps1            | PS-D-WIN-TimeZoneAuto            | UX/Config       | Zeitzone automatisch (Standortdienst + tzautoupdate)                                                                        |
-| PS-D-WIN-PowerConfig.ps1             | PS-D-WIN-PowerConfig             | UX/Config       | Kein Sleep am Netzteil, Display-Timeout konfigurierbar                                                                      |
-| PS-D-WIN-ExplorerDefaults.ps1        | PS-D-WIN-ExplorerDefaults        | UX/Config       | Dateiendungen anzeigen, Explorer öffnet "Dieser PC" – für alle und künftige Nutzer                                          |
-| PS-D-WIN-DisableConsumerFeatures.ps1 | PS-D-WIN-DisableConsumerFeatures | Debloat         | Deaktiviert Consumer-/Werbe-Inhalte, Spotlight-Tipps, Widgets                                                               |
-| PS-D-WIN-RemoveConsumerBloat.ps1     | PS-D-WIN-RemoveConsumerBloat     | Debloat         | Entfernt Consumer-Apps provisioned und für alle Nutzer, gegen eine Schutzliste abgesichert                                  |
-| PS-D-WIN-DefaultAppAssociations.ps1  | PS-D-WIN-DefaultAppAssociations  | UX/Config       | Importiert die Standard-Dateizuordnungen per DISM (PDF → Adobe Acrobat Reader DC, Skriptformate → Notepad++)                |
-| PS-D-WIN-ScriptFileSafety.ps1        | PS-D-WIN-ScriptFileSafety        | Härtung         | Setzt für ausführbare Textformate Notepad++ als Standardverb und deaktiviert den Windows Script Host                        |
-| PS-D-WIN-BiosBaseline.ps1            | PS-D-WIN-BiosBaseline            | Härtung         | Schaltet die Firmware-Sicherheitsfunktionen der Baseline über die BIOS-Schnittstelle des Herstellers ein (Dell, HP, Lenovo) |
-| PS-D-WIN-SystemTweaks.ps1            | PS-D-WIN-SystemTweaks            | UX/Config       | Kleine maschinenweite Oberflächen-Anpassungen                                                                               |
-| PS-D-WIN-OemBranding.ps1             | PS-D-WIN-OemBranding             | UX/Config       | Hersteller, Support-Infos, Logo und registrierten Besitzer unter System > Info setzen                                       |
-| PS-D-WIN-DesktopLockScreen.ps1       | PS-D-WIN-DesktopLockScreen       | UX/Config       | Desktop-Hintergrund und Sperrbildschirm per PersonalizationCSP setzen                                                       |
-| PS-D-WIN-CreateShortcut.ps1          | PS-D-WIN-CreateShortcut          | Deployment      | Legt eine All-User-Verknüpfung an (Desktop/Startmenü)                                                                       |
-| PS-D-WIN-InstallFonts.ps1            | PS-D-WIN-InstallFonts            | Deployment      | Installiert Schriftarten maschinenweit                                                                                      |
-| PS-D-WIN-WindowsFeatures.ps1         | PS-D-WIN-WindowsFeatures         | UX/Config       | Windows-Features hinzufügen, deaktivieren und entfernen                                                                     |
+| Script                               | Intune name                      | Category    | Purpose                                                                                                         |
+|--------------------------------------|----------------------------------|-------------|-----------------------------------------------------------------------------------------------------------------|
+| PS-D-WIN-AutoAcceptSSO.ps1           | PS-D-WIN-AutoAcceptSSO           | UX/Config   | Checks and sets `AutoAcceptSsoPermission=1` as a machine-wide Windows AAD policy                                |
+| PS-D-WIN-TimeZoneAuto.ps1            | PS-D-WIN-TimeZoneAuto            | UX/Config   | Automatic time zone (location service + tzautoupdate)                                                           |
+| PS-D-WIN-PowerConfig.ps1             | PS-D-WIN-PowerConfig             | UX/Config   | No sleep on AC power, configurable display timeout                                                              |
+| PS-D-WIN-ExplorerDefaults.ps1        | PS-D-WIN-ExplorerDefaults        | UX/Config   | Show file extensions, Explorer opens "This PC" – for all existing and future users                              |
+| PS-D-WIN-DisableConsumerFeatures.ps1 | PS-D-WIN-DisableConsumerFeatures | Debloat     | Turns off consumer and advertising content, Spotlight tips, widgets                                             |
+| PS-D-WIN-RemoveConsumerBloat.ps1     | PS-D-WIN-RemoveConsumerBloat     | Debloat     | Removes consumer apps (provisioned and for all users), guarded by a protected list                              |
+| PS-D-WIN-DefaultAppAssociations.ps1  | PS-D-WIN-DefaultAppAssociations  | UX/Config   | Imports default file associations via DISM (PDF → Adobe Acrobat Reader DC, script formats → Notepad++)          |
+| PS-D-WIN-ScriptFileSafety.ps1        | PS-D-WIN-ScriptFileSafety        | Hardening   | Makes Notepad++ the default verb for executable text formats and can turn off Windows Script Host               |
+| PS-D-WIN-BiosBaseline.ps1            | PS-D-WIN-BiosBaseline            | Hardening   | Turns on firmware security features through the vendor BIOS interface (Dell, HP, Lenovo)                        |
+| PS-D-WIN-SystemTweaks.ps1            | PS-D-WIN-SystemTweaks            | UX/Config   | Small machine-wide interface tweaks                                                                             |
+| PS-D-WIN-OemBranding.ps1             | PS-D-WIN-OemBranding             | UX/Config   | Sets manufacturer, support info, logo and registered owner shown under System > About                           |
+| PS-D-WIN-DesktopLockScreen.ps1       | PS-D-WIN-DesktopLockScreen       | UX/Config   | Sets desktop background and lock screen image via PersonalizationCSP                                            |
+| PS-D-WIN-CreateShortcut.ps1          | PS-D-WIN-CreateShortcut          | Deployment  | Creates an all-users shortcut (desktop / Start menu)                                                            |
+| PS-D-WIN-InstallFonts.ps1            | PS-D-WIN-InstallFonts            | Deployment  | Installs fonts machine-wide                                                                                     |
+| PS-D-WIN-WindowsFeatures.ps1         | PS-D-WIN-WindowsFeatures         | UX/Config   | Adds, disables and removes Windows features                                                                     |
 
-Der Intune-Name steht im Abschnitt .NAME des jeweiligen Skripts. Schema: PS für
-Platform Script, REM für Remediation, D oder U für Geräte- bzw. Benutzerkontext,
-dann Plattform und Zweck.
+The Intune display name is taken from the `.NAME` section of each script. Scheme:
+`PS` for platform script, `REM` for remediation, `D` or `U` for device or user
+context, then platform and purpose.
 
-## Standard-Deployment
+## Standard deployment
 
-1. Endpoint Manager → Devices → Scripts and remediations → Platform scripts → Add → Windows 10 and later.
-2. Skriptdatei hochladen.
+1. Intune admin center → Devices → Scripts and remediations → Platform scripts → Add → Windows 10 and later.
+2. Upload the script file.
 3. Run this script using the logged-on credentials: No (SYSTEM).
-4. Enforce script signature check: nach Bedarf.
+4. Enforce script signature check: as required.
 5. Run script in 64-bit PowerShell Host: Yes.
-6. Zuweisen.
+6. Assign.
 
-## Hinweise pro Skript
+## Notes per script
 
-- PS-D-WIN-ExplorerDefaults: greift für angemeldete Nutzer erst nach Ab-/Anmelden bzw. Explorer-Neustart. Neue Nutzer erben die Werte über das Default-Profil.
-- PS-D-WIN-RemoveConsumerBloat: Target- und Protected-Liste im Konfigblock vor dem Rollout prüfen. Namen unterstützen Wildcards, die Schutzliste gewinnt gegen ein zu weit gefasstes Muster. Werden Apps zusätzlich per Settings Catalog oder Autopilot-Branding entfernt, die Listen abgleichen, sonst arbeiten Policy und Skript gegeneinander.
-- PS-D-WIN-CreateShortcut: Parameter-Defaults anpassen oder mehrere Kopien mit unterschiedlichen Werten verteilen. Platform Scripts nehmen selbst keine Parameter entgegen – Werte also im Skript setzen.
-- PS-D-WIN-DefaultAppAssociations: DISM schreibt die Zuordnungen in das Standardprofil. Sie greifen damit für Profile, die danach angelegt werden. Adobe Acrobat Reader DC und Notepad++ müssen vor der ersten Anmeldung installiert sein, sonst fällt Windows auf die eigenen Standards zurück. Beide daher als Required App zuweisen und im ESP als blockierende App führen.
-- PS-D-WIN-ScriptFileSafety: optional. Nötig nur dort, wo der DISM-Import nicht hinreicht, also bei bereits angelegten Profilen und bei bat/cmd, die Windows nicht zuverlässig über die Standardzuordnungen führt. Schreibt maschinenweit unter HKLM\\SOFTWARE\\Classes und wirkt sofort für alle Nutzer. Der bisherige Standardverb wird unter HKLM\\SOFTWARE\\IntuneScripts\\FileTypeSafety abgelegt, damit die Änderung zurückgenommen werden kann. Läuft erst, wenn Notepad++ installiert ist, sonst Exit 1 und Intune wiederholt. Der Schalter $DisableWindowsScriptHost steht auf $false – er geht über den Fehlklick-Schutz hinaus und bricht vbs/js-Aufrufe.
-- Reichweite der Zuordnungen: sie ändern nur, was das Standardverb auslöst, also Doppelklick und ShellExecute. cmd /c, wscript, powershell -File und der Rechtsklick-Eintrag "Ausführen" bleiben unberührt. Startet eine Anwendung eine bat-Datei über ShellExecute statt über CreateProcess, öffnet sie ab jetzt Notepad++ – bei Fachanwendungen vor dem Rollout gegenprüfen. Die Ausführung selbst sollten Attack-Surface-Reduction-Regeln und die Ausführungsrichtlinie AllSigned begrenzen. Eine per "Öffnen mit → Immer" getroffene Nutzerwahl gewinnt für diesen Nutzer und diese Endung weiterhin.
-- PS-D-WIN-BiosBaseline: schreibt je nach Hersteller über root\\dcim\\sysman\\biosattributes (Dell, agentfreies WMI-ACPI) bzw. root\\dell\\sysman (Dell Command | Monitor als Rückfallweg), root\\hp\\instrumentedBIOS (HP) oder root\\wmi mit Lenovo_SetBiosSetting und anschließendem Lenovo_SaveBiosSettings. Die Attributnamen unterscheiden sich je Hersteller und Modell, deshalb steht keiner fest im Skript: es liest die vorhandenen Attribute aus, nimmt den ersten Treffer aus der Kandidatenliste des Herstellers und fällt sonst auf einen Namensabgleich per Muster zurück. Den zu schreibenden Wert holt es aus der Werteliste des Attributs selbst, damit Enabled, Enable, Active und Available gleichermaßen passen.
-- PS-D-WIN-BiosBaseline, Umfang: die Tabelle $Features im Konfigblock steuert alles. Enthalten sind VT-d, VT-x, TPM sichtbar und aktiv, DMA-Schutz, SMM-Mitigation, Speicherverschlüsselung und Intel TXT – ausschließlich Funktionen ohne Betriebsrisiko. Je Zeile liest das Skript den Ist-Zustand, lässt eine bereits eingeschaltete Funktion in Ruhe und schaltet eine ausgeschaltete ein. Nichts davon verändert das Bootverhalten, und ein TPM wird nie gelöscht: Namen mit clear, reset, erase und Ähnlichem sind vom Abgleich generell ausgenommen, damit ein weit gefasstes Muster nicht auf einem Lösch-Schalter landet. Nicht vorhandene Funktionen werden protokolliert und übersprungen, ebenso schreibgeschützte Attribute und Werte, die weder als an noch als aus lesbar sind.
-- PS-D-WIN-BiosBaseline, Betrieb: ist ein BIOS-Kennwort gesetzt, gehört es in $BiosPassword, sonst weist die Firmware jeden Schreibvorgang ab. Auf dem Dell-Nativpfad prüft das Skript das vorab über PasswordObject in root\\dcim\\sysman\\wmisecurity und bricht mit einer klaren Meldung ab, statt in einen nichtssagenden Statuscode zu laufen. Vor dem ersten Schreibvorgang wird BitLocker auf dem Systemlaufwerk für einen Neustart ausgesetzt, weil die geänderten PCR-Messwerte das Gerät sonst in die Wiederherstellung schicken. Die Einstellungen greifen mit dem nächsten Neustart, der separat einzuplanen ist. Exit 1 bei fehlendem Provider, abgewiesenem Schreibvorgang oder fehlendem TXT – TXT ist als einzige Zeile als erforderlich markiert, weil manche Firmwares es erst nach eingeschaltetem VT-x und VT-d anzeigen. Der erste Lauf schaltet dann die Voraussetzungen ein, der Intune-Wiederholungslauf nach dem Neustart findet TXT und schließt ab.
-- PS-D-WIN-BiosBaseline, Wirkung von TXT: TXT ist die Voraussetzung für System Guard Secure Launch (DRTM). Ohne die passende VBS-Einstellung in Intune bleibt die Funktion ungenutzt.
-- PS-D-WIN-InstallFonts: Schriftdateien in einen Unterordner "Fonts" neben das Skript packen. Platform Scripts laden nur eine einzelne .ps1 hoch; für Begleitdateien stattdessen als Win32-App (.intunewin) verpacken.
+- **PS-D-WIN-ExplorerDefaults:** takes effect for signed-in users only after sign-out/sign-in or an Explorer restart. New users inherit the values through the default profile.
+- **PS-D-WIN-RemoveConsumerBloat:** review the target and protected lists in the configuration block before rollout. Names support wildcards; the protected list wins over an overly broad pattern. If apps are also removed via Settings Catalog or Autopilot branding, keep the lists aligned, otherwise policy and script work against each other.
+- **PS-D-WIN-CreateShortcut:** adjust the parameter defaults, or deploy several copies with different values. Platform scripts don't accept parameters, so set the values inside the script.
+- **PS-D-WIN-DefaultAppAssociations:** DISM writes the associations to the default profile, so they apply to profiles created afterwards. Adobe Acrobat Reader DC and Notepad++ must be installed before the first sign-in, otherwise Windows falls back to its own defaults. Assign both as required apps and make them blocking apps in the ESP.
+- **PS-D-WIN-ScriptFileSafety:** optional. Only needed where the DISM import isn't enough, i.e. for existing profiles and for bat/cmd, which Windows doesn't reliably route through the default associations. Writes machine-wide under `HKLM\SOFTWARE\Classes` and applies immediately to all users. The previous default verb is stored under `HKLM\SOFTWARE\IntuneScripts\FileTypeSafety` so the change can be reverted. Only runs once Notepad++ is installed; otherwise exit 1 and Intune retries. The switch `$DisableWindowsScriptHost` is `$false` by default – it goes beyond protecting against accidental double-clicks and breaks vbs/js calls.
+- **Scope of the associations:** they only change what the default verb triggers, i.e. double-click and ShellExecute. `cmd /c`, `wscript`, `powershell -File` and the "Run" context menu entry are not affected. If an application launches a bat file through ShellExecute instead of CreateProcess, it now opens in Notepad++ – check line-of-business apps before rollout. Blocking actual execution is the job of Attack Surface Reduction rules and the AllSigned execution policy. A user choice made via "Open with → Always" still wins for that user and extension.
+- **PS-D-WIN-BiosBaseline, how it writes:** depending on the vendor via `root\dcim\sysman\biosattributes` (Dell, agentless WMI-ACPI) or `root\dell\sysman` (Dell Command | Monitor as fallback), `root\hp\instrumentedBIOS` (HP), or `root\wmi` with `Lenovo_SetBiosSetting` followed by `Lenovo_SaveBiosSettings`. Attribute names differ per vendor and model, so none is hard-coded: the script reads the available attributes, takes the first match from the vendor's candidate list and otherwise falls back to pattern matching. The value to write comes from the attribute's own list of allowed values, so Enabled, Enable, Active and Available all work.
+- **PS-D-WIN-BiosBaseline, scope:** the `$Features` table in the configuration block controls everything. Included are VT-d, VT-x, TPM visible and active, DMA protection, SMM mitigation, memory encryption and Intel TXT – only features without operational risk. For each row the script reads the current state, leaves an enabled feature alone and turns on a disabled one. None of this changes boot behavior, and the TPM is never cleared: names containing clear, reset, erase and similar are always excluded from matching, so a broad pattern can't land on a wipe switch. Missing features are logged and skipped, as are read-only attributes and values that read as neither on nor off.
+- **PS-D-WIN-BiosBaseline, operation:** if a BIOS password is set, put it in `$BiosPassword`, otherwise the firmware rejects every write. On the native Dell path the script checks this upfront via `PasswordObject` in `root\dcim\sysman\wmisecurity` and aborts with a clear message instead of an opaque status code. Before the first write, BitLocker on the system drive is suspended for one reboot, because the changed PCR measurements would otherwise send the device into recovery. The settings take effect at the next reboot, which you schedule separately. Exit 1 on a missing provider, a rejected write or missing TXT – TXT is the only row marked as required, because some firmwares only expose it after VT-x and VT-d are on. The first run then enables the prerequisites, and the Intune retry after the reboot finds TXT and completes.
+- **PS-D-WIN-BiosBaseline, why TXT:** TXT is the prerequisite for System Guard Secure Launch (DRTM). Without the matching VBS setting in Intune the feature stays unused.
+- **PS-D-WIN-InstallFonts:** put the font files in a `Fonts` subfolder next to the script. Platform scripts only upload a single .ps1; for accompanying files, package it as a Win32 app (.intunewin) instead.
 
-## Signieren
+## Signing
 
-Vor der Verteilung signieren (für AllSigned zwingend):
+Sign before distribution (mandatory with AllSigned):
 
 ```bash
 ./../Remediations/_codesign/sign-scripts.sh <cert-dir> \

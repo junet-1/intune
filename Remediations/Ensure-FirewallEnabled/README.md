@@ -1,25 +1,25 @@
 # Remediation: Ensure Firewall Enabled
 
-Intune-Remediation-Paket, das die Windows Defender Firewall für alle drei Profile
-(Domäne, Privat, Öffentlich) eingeschaltet hält. Regeln werden nicht verändert –
-nur der Ein/Aus-Schalter pro Profil.
+Intune remediation package that keeps Windows Defender Firewall turned on for all
+three profiles (domain, private, public). Rules are not changed – only the on/off
+switch per profile.
 
-## Dateien
+## Files
 
-| Datei | Rolle in Intune |
-|-------|-----------------|
-| Detect-FirewallEnabled.ps1 | Detection script (Exit 1 = mindestens ein Profil aus) |
-| Remediate-FirewallEnabled.ps1 | Remediation script (schaltet alle Profile ein) |
+| File | Role in Intune |
+|------|----------------|
+| Detect-FirewallEnabled.ps1 | Detection script (exit 1 = at least one profile off) |
+| Remediate-FirewallEnabled.ps1 | Remediation script (turns all profiles on) |
 
 ## Deployment in Intune
 
-1. Endpoint Manager → Devices → Remediations → Create.
+1. Intune admin center → Devices → Scripts and remediations → Create.
 2. Detection: Detect-FirewallEnabled.ps1, Remediation: Remediate-FirewallEnabled.ps1.
 3. Run this script using the logged-on credentials: No (SYSTEM).
 4. Run script in 64-bit PowerShell: Yes.
-5. Zeitplan zuweisen (z. B. täglich).
+5. Assign a schedule (e.g. daily).
 
-## Signieren
+## Signing
 
 ```bash
 ./_codesign/sign-scripts.sh <cert-dir> \

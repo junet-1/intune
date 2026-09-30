@@ -1,42 +1,41 @@
 # Remediation: Ensure LDAP Client Encryption
 
-Intune-Remediation-Paket, das für LDAP-Verbindungen des Windows-Clients
-Verschlüsselung (Sealing bzw. TLS) erzwingt. Schützt Verzeichnisdaten und
-Anmeldeinformationen bei der Übertragung. Ergänzt LDAP Client Signing, ersetzt
-es nicht.
+Intune remediation package that requires encryption (sealing or TLS) for LDAP
+connections made by the Windows client. Protects directory data and credentials
+in transit. Complements LDAP client signing; it doesn't replace it.
 
-## Dateien
+## Files
 
-| Datei | Rolle in Intune |
-|-------|-----------------|
-| Detect-LDAPClientEncryption.ps1 | Detection script (Exit 1 = Verschlüsselung nicht erzwungen) |
-| Remediate-LDAPClientEncryption.ps1 | Remediation script (setzt LDAPClientConfidentiality=2) |
+| File | Role in Intune |
+|------|----------------|
+| Detect-LDAPClientEncryption.ps1 | Detection script (exit 1 = encryption not required) |
+| Remediate-LDAPClientEncryption.ps1 | Remediation script (sets LDAPClientConfidentiality=2) |
 
-## Was gesetzt wird
+## What is set
 
-LDAPClientConfidentiality = 2 (DWORD) unter
-HKLM\SYSTEM\CurrentControlSet\Services\ldap
+LDAPClientConfidentiality = 2 (DWORD) under
+`HKLM\SYSTEM\CurrentControlSet\Services\ldap`
 
-| Wert | Bedeutung |
-|------|-----------|
+| Value | Meaning |
+|-------|---------|
 | 0 | None |
-| 1 | Negotiate (Standard) |
+| 1 | Negotiate (default) |
 | 2 | Require |
 
-Wirksam ab der nächsten LDAP-Verbindung, kein Neustart nötig. Ausgewertet ab
-Windows 11 24H2; ältere Builds ignorieren den Wert.
+Takes effect with the next LDAP connection, no reboot needed. Evaluated from
+Windows 11 24H2; older builds ignore the value.
 
-Mit Require schlagen LDAP-Verbindungen zu Servern fehl, die weder Sealing noch
-TLS anbieten (z. B. einfache LDAP-Binds gegen Drittsysteme auf Port 389).
+With Require, LDAP connections to servers that offer neither sealing nor TLS
+fail (e.g. simple LDAP binds against third-party systems on port 389).
 
 ## Deployment in Intune
 
-1. Endpoint Manager → Devices → Scripts and remediations → Create.
+1. Intune admin center → Devices → Scripts and remediations → Create.
 2. Detection: Detect-LDAPClientEncryption.ps1, Remediation: Remediate-LDAPClientEncryption.ps1.
 3. Run this script using the logged-on credentials: No (SYSTEM).
 4. Run script in 64-bit PowerShell: Yes.
 
-## Signieren
+## Signing
 
 ```bash
 ./_codesign/sign-scripts.sh <cert-dir> \
@@ -44,8 +43,8 @@ TLS anbieten (z. B. einfache LDAP-Binds gegen Drittsysteme auf Port 389).
   Ensure-LDAPClientEncryption/Remediate-LDAPClientEncryption.ps1
 ```
 
-## Herkunft
+## Origin
 
-Adaptiert von pariswells.com, "Encrypt LDAP client traffic to protect
-sensitive data in transit (Intune)", angepasst an Logging und Namensschema der
-übrigen Remediations dieser Sammlung.
+Adapted from pariswells.com, "Encrypt LDAP client traffic to protect sensitive
+data in transit (Intune)", aligned with the logging and naming of the other
+remediations in this collection.

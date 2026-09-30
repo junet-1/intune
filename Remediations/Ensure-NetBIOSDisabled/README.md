@@ -1,48 +1,48 @@
 # Remediation: Ensure NetBIOS Disabled
 
-Intune-Remediation-Paket, das NetBIOS über TCP/IP auf allen Netzwerkschnittstellen
-deaktiviert hält. NetBIOS-Namensauflösung (NBT-NS) läuft per Broadcast und ohne
-Authentifizierung und ist damit der Standardhebel für Name Poisoning und
-NTLM-Relay-Angriffe.
+Intune remediation package that keeps NetBIOS over TCP/IP turned off on all
+network interfaces. NetBIOS name resolution (NBT-NS) works by broadcast and
+without authentication, which makes it the standard lever for name poisoning and
+NTLM relay attacks.
 
-Gesteuert wird der Wert NetbiosOptions je Schnittstelle unter
-HKLM\SYSTEM\CurrentControlSet\Services\NetBT\Parameters\Interfaces\Tcpip_{GUID}:
+The script manages the value NetbiosOptions per interface under
+`HKLM\SYSTEM\CurrentControlSet\Services\NetBT\Parameters\Interfaces\Tcpip_{GUID}`:
 
-| Wert | Bedeutung |
-|------|-----------|
-| 0 | Einstellung vom DHCP-Server übernehmen |
-| 1 | NetBIOS über TCP/IP aktiviert |
-| 2 | NetBIOS über TCP/IP deaktiviert (Zielwert) |
+| Value | Meaning |
+|-------|---------|
+| 0 | Use the setting from the DHCP server |
+| 1 | NetBIOS over TCP/IP enabled |
+| 2 | NetBIOS over TCP/IP disabled (target value) |
 
-Der Wert 0 gilt als nicht konform, weil die Entscheidung sonst beim DHCP-Server
-liegt.
+Value 0 counts as non-compliant, because the decision would otherwise be left to
+the DHCP server.
 
-## Dateien
+## Files
 
-| Datei | Rolle in Intune |
-|-------|-----------------|
-| Detect-NetBIOSDisabled.ps1 | Detection script (Exit 1 = mindestens eine Schnittstelle nicht auf 2) |
-| Remediate-NetBIOSDisabled.ps1 | Remediation script (NetbiosOptions=2 auf allen Tcpip_*) |
+| File | Role in Intune |
+|------|----------------|
+| Detect-NetBIOSDisabled.ps1 | Detection script (exit 1 = at least one interface not set to 2) |
+| Remediate-NetBIOSDisabled.ps1 | Remediation script (NetbiosOptions=2 on all Tcpip_*) |
 
 ## Deployment in Intune
 
-1. Endpoint Manager → Devices → Scripts and remediations → Create.
+1. Intune admin center → Devices → Scripts and remediations → Create.
 2. Detection: Detect-NetBIOSDisabled.ps1, Remediation: Remediate-NetBIOSDisabled.ps1.
 3. Run this script using the logged-on credentials: No (SYSTEM).
 4. Run script in 64-bit PowerShell: Yes.
 
-## Wirkung
+## Effect
 
-Bestehende Bindungen behalten ihren Zustand bis zum Adapter-Reset oder Neustart,
-neue und neu verbundene Adapter übernehmen den Wert sofort. Der erste Lauf meldet
-daher oft noch einmal nicht konform, bis das Gerät neu gestartet wurde.
+Existing bindings keep their state until an adapter reset or reboot; new and
+reconnected adapters pick up the value immediately. The first run therefore often
+reports non-compliant once more until the device has restarted.
 
-Vor dem breiten Ausrollen prüfen, ob im Netz noch etwas auf NetBIOS-Namensauflösung
-angewiesen ist: WINS, Zugriff auf ältere Freigaben per reinem NetBIOS-Namen sowie
-die Netzwerkumgebung im Explorer. Läuft alles über DNS, ist die Abschaltung
-unkritisch.
+Before a broad rollout, check whether anything in the network still depends on
+NetBIOS name resolution: WINS, access to older shares by plain NetBIOS name, and
+network browsing in Explorer. If everything resolves via DNS, turning it off is
+safe.
 
-## Signieren
+## Signing
 
 ```bash
 ./_codesign/sign-scripts.sh <cert-dir> \

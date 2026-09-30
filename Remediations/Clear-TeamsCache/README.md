@@ -1,34 +1,33 @@
 # Remediation: Clear Teams Cache
 
-Intune-Remediation-Paket, das einen aufgeblähten Teams-Cache des angemeldeten
-Nutzers bereinigt. Behebt typische Teams-Probleme (langsam, hängt beim Anmelden,
-zeigt Veraltetes).
+Intune remediation package that cleans up a bloated Teams cache of the signed-in
+user. Fixes typical Teams issues (slow, hangs at sign-in, shows stale content).
 
-## Kontext
+## Context
 
-Läuft im Benutzerkontext (runAsAccount = user), weil der Cache im Userprofil
-liegt. Läuft Teams gerade, überspringt die Remediation die Bereinigung, um keine
-aktive Sitzung zu stören; der nächste Zyklus räumt auf, sobald Teams zu ist.
+Runs in user context (runAsAccount = user) because the cache lives in the user
+profile. If Teams is running, the remediation skips the cleanup so it doesn't
+disrupt an active session; the next cycle cleans up once Teams is closed.
 
-## Dateien
+## Files
 
-| Datei | Rolle in Intune |
-|-------|-----------------|
-| Detect-TeamsCache.ps1 | Detection script (Exit 1 = Cache größer als Schwelle) |
-| Remediate-TeamsCache.ps1 | Remediation script (leert Cache, wenn Teams zu ist) |
+| File | Role in Intune |
+|------|----------------|
+| Detect-TeamsCache.ps1 | Detection script (exit 1 = cache larger than threshold) |
+| Remediate-TeamsCache.ps1 | Remediation script (clears the cache when Teams is closed) |
 
-## Konfiguration
+## Configuration
 
-MaxCacheMB (Standard 500) am Anfang beider Skripte, identisch halten.
+MaxCacheMB (default 500) at the top of both scripts; keep them identical.
 
 ## Deployment in Intune
 
-1. Endpoint Manager → Devices → Scripts and remediations → Create.
+1. Intune admin center → Devices → Scripts and remediations → Create.
 2. Detection: Detect-TeamsCache.ps1, Remediation: Remediate-TeamsCache.ps1.
-3. Run this script using the logged-on credentials: Yes (Benutzerkontext).
+3. Run this script using the logged-on credentials: Yes (user context).
 4. Run script in 64-bit PowerShell: Yes.
 
-## Signieren
+## Signing
 
 ```bash
 ./_codesign/sign-scripts.sh <cert-dir> \
@@ -36,8 +35,8 @@ MaxCacheMB (Standard 500) am Anfang beider Skripte, identisch halten.
   Clear-TeamsCache/Remediate-TeamsCache.ps1
 ```
 
-## Herkunft
+## Origin
 
-Idee adaptiert aus EndpointAnalyticsRemediationScripts (MIT). Neu geschrieben mit
-Schwellwert-Erkennung, Schutz gegen laufendes Teams und Unterstützung für classic
-und new Teams.
+Idea adapted from EndpointAnalyticsRemediationScripts (MIT), see
+THIRD-PARTY-NOTICES.md. Rewritten with threshold-based detection, protection
+against a running Teams and support for classic and new Teams.

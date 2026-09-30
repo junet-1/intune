@@ -5,7 +5,7 @@ Windows 11, built for a cloud-only (Entra ID joined, Autopilot) environment.
 Every script is self-contained, idempotent and logs to
 `C:\ProgramData\IntuneScripts\Logs`.
 
-Per-script documentation lives in the README next to each script (German).
+Per-script documentation lives in the README next to each script.
 
 ## Contents
 

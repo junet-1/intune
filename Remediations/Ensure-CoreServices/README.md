@@ -1,40 +1,40 @@
 # Remediation: Ensure Core Services
 
-Intune-Remediation-Paket, das wichtige Dienste überwacht und startet bzw.
-reaktiviert, wenn sie deaktiviert oder gestoppt sind. Standardmäßig:
+Intune remediation package that monitors important services and starts or
+re-enables them when they are disabled or stopped. By default:
 
 - ClickToRunSvc (Office Click-to-Run)
 - wuauserv (Windows Update)
 
-## Dateien
+## Files
 
-| Datei | Rolle in Intune |
-|-------|-----------------|
-| Detect-CoreServices.ps1 | Detection script (Exit 1 = Dienst deaktiviert oder gestoppt) |
-| Remediate-CoreServices.ps1 | Remediation script (setzt Starttyp, startet Dienst) |
+| File | Role in Intune |
+|------|----------------|
+| Detect-CoreServices.ps1 | Detection script (exit 1 = service disabled or stopped) |
+| Remediate-CoreServices.ps1 | Remediation script (sets start type, starts the service) |
 
-## Konfiguration
+## Configuration
 
-Die Dienstliste steht im Config-Block am Anfang beider Skripte, identisch halten.
-Pro Dienst: Name, DesiredStartType, EnsureRunning. Nicht installierte Dienste
-werden übersprungen (z. B. ClickToRunSvc auf Geräten ohne Click-to-Run-Office).
+The service list lives in the config block at the top of both scripts; keep them
+identical. Per service: Name, DesiredStartType, EnsureRunning. Services that aren't
+installed are skipped (e.g. ClickToRunSvc on devices without Click-to-Run Office).
 
-## Hinweis zu wuauserv
+## Note on wuauserv
 
-wuauserv ist trigger-started und liegt im Normalbetrieb absichtlich im Zustand
-Gestoppt. Mit EnsureRunning = true meldet die Detection den Dienst daher in den
-meisten Zyklen als non-compliant und startet ihn jedes Mal neu. Das ist harmlos,
-erzeugt aber Rauschen im Reporting. Wer nur gegen ein versehentliches oder
-manipuliertes Disabled schützen will, setzt EnsureRunning für wuauserv auf false.
+wuauserv is trigger-started and is intentionally stopped during normal operation.
+With EnsureRunning = true the detection therefore reports the service as
+non-compliant in most cycles and starts it every time. That's harmless but adds
+noise to reporting. If you only want to protect against an accidental or
+tampered Disabled state, set EnsureRunning to false for wuauserv.
 
 ## Deployment in Intune
 
-1. Endpoint Manager → Devices → Scripts and remediations → Create.
+1. Intune admin center → Devices → Scripts and remediations → Create.
 2. Detection: Detect-CoreServices.ps1, Remediation: Remediate-CoreServices.ps1.
 3. Run this script using the logged-on credentials: No (SYSTEM).
 4. Run script in 64-bit PowerShell: Yes.
 
-## Signieren
+## Signing
 
 ```bash
 ./_codesign/sign-scripts.sh <cert-dir> \
